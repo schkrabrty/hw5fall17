@@ -66,14 +66,18 @@ end
 Then (/^I should see only movies rated: "(.*?)"$/) do |arg1|
   first, *rest = arg1.split(/, /)
   a = Movie.where(:rating => first).where(:rating => rest).count
-  rows = page.all('#movie tr').size
-  rows.should == a
+  page.all('#movies tr') do |tr|
+      rows = tr.size
+      rows.should == a
+  end
 end
 
 Then (/^I should see all of the movies$/) do 
   b = Movie.count
-  rows = page.all('#movie tr').size
-  rows.should == b
+  page.all('#movies tr') do |tr|
+      rows = tr.size
+      rows.should == b
+  end
 end
 
 When (/^Title of the movies are unsorted$/) do
@@ -81,8 +85,9 @@ When (/^Title of the movies are unsorted$/) do
 end
 
 Then (/^Sort the title of the movies alphabetically$/) do 
-    page.all('#movie tr') do |tr|
+    page.all('#movies tr') do |tr|
        tr.order(title: :asc) 
+       expect(page).to have_content(tr)
     end
 end
 
@@ -91,8 +96,9 @@ When (/^The movies are unsorted in the order of release date$/) do
 end
 
 Then (/^Sort the movies in increasing order of release date$/) do
-    page.all('#movie tr') do |tr|
+    page.all('#movies tr') do |tr|
        tr.order(release_date: :asc) 
+       expect(page).to have_content(tr)
     end
 end
 
