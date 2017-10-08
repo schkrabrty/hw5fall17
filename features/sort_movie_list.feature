@@ -23,7 +23,11 @@ Background: movies have been added to database
 
 Scenario: sort movies alphabetically
   # your scenario here
+  When Title of the movies are unsorted
+  Then Sort the title of the movies alphabetically
 
 Scenario: sort movies in increasing order of release date
   # your scenario here
+  When The movies are unsorted in the order of release date
+  Then Sort the movies in increasing order of release date
 
