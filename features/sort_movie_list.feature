@@ -23,11 +23,11 @@ Background: movies have been added to database
 
 Scenario: sort movies alphabetically
   # your scenario here
-  When Title of the movies are unsorted
-  Then Sort the title of the movies alphabetically
+  When I click on Movie Title Link
+  Then I should see "Aladdin" before "Amelie"
 
 Scenario: sort movies in increasing order of release date
   # your scenario here
-  When The movies are unsorted in the order of release date
-  Then Sort the movies in increasing order of release date
+  When I click on Release Date Link
+  Then I should see the release date "1968-04-06 00:00:00 UTC" before "1981-06-12 00:00:00 UTC"
 

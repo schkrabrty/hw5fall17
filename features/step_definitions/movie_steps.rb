@@ -64,13 +64,14 @@ When (/^I have opted to see movies rated: "(.*?)"$/) do |arg1|
 end
 
 Then (/^I should see only movies rated: "(.*?)"$/) do |arg1|
-  first, *rest = arg1.split(/, /)
-  a = Movie.where(:rating => first).where(:rating => rest).count
+  a = arg1.split(/, /)
+  b = Movie.where(:rating => a).count
   page.all('#movies tr') do |tr|
       rows = tr.size
-      rows.should == a
+      rows.should == b
   end
 end
+
 
 Then (/^I should see all of the movies$/) do 
   b = Movie.count
@@ -80,25 +81,39 @@ Then (/^I should see all of the movies$/) do
   end
 end
 
-When (/^Title of the movies are unsorted$/) do
+When (/^I click on Movie Title Link$/) do
     visit movies_path
+    click_on "Movie Title"
 end
 
-Then (/^Sort the title of the movies alphabetically$/) do 
+Then (/^I should see "(.*?)" before "(.*?)"$/) do |arg1, arg2|
+    result = true
     page.all('#movies tr') do |tr|
-       tr.order(title: :asc) 
-       expect(page).to have_content(tr)
+        a = tr.find(arg1).index
+        b = tr.find(arg2).index
+        if a > b
+            result = false
+            break
+        end
     end
+    expect(result).to be_truthy
 end
 
-When (/^The movies are unsorted in the order of release date$/) do
+When (/^I click on Release Date Link$/) do
     visit movies_path
+    click_on "Release Date"
 end
 
-Then (/^Sort the movies in increasing order of release date$/) do
+Then (/^I should see the release date "(.*?)" before "(.*?)"$/) do |arg1, arg2|
+    result = true
     page.all('#movies tr') do |tr|
-       tr.order(release_date: :asc) 
-       expect(page).to have_content(tr)
+        a = tr.find(arg1).index
+        b = tr.find(arg2).index
+        if a > b
+            result = false
+            break
+        end
     end
+    expect(result).to be_truthy
 end
 
