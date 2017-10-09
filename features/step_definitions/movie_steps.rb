@@ -51,7 +51,8 @@ Given (/the following movies have been added to RottenPotatoes:/) do |movies_tab
     # The keys will be the table headers and the values will be the row contents.
     # Entries can be directly to the database with ActiveRecord methods
     # Add the necessary Active Record call(s) to populate the database.
-    movie = Hash[Movie.pluck('movies.title', 'movies.rating', 'movies.release_date')]
+    #movie = Hash[Movie.pluck('movies.title', 'movies.rating', 'movies.release_date')]
+    Movie.create(movie)
   end
 end
 
@@ -60,12 +61,27 @@ When (/^I have opted to see movies rated: "(.*?)"$/) do |arg1|
   # iterate over the ratings and check/uncheck the ratings
   # using the appropriate Capybara command(s)
   visit movies_path
+  a = arg1.split(/, /)
+  
+  uncheck('ratings_G')
+  uncheck('ratings_PG')
+  uncheck('ratings_PG-13')
+  uncheck('ratings_NC-17')
+  uncheck('ratings_R')
+  
+  a.each do |rating|
+    check('ratings_'+rating)
+  end
+  
+  click_button 'Refresh'
   #pending  #remove this statement after implementing the test step
 end
 
 Then (/^I should see only movies rated: "(.*?)"$/) do |arg1|
   a = arg1.split(/, /)
+  #puts a
   b = Movie.where(:rating => a).count
+  #puts b
   page.all('#movies tr') do |tr|
       rows = tr.size
       rows.should == b
@@ -87,14 +103,23 @@ When (/^I click on Movie Title Link$/) do
 end
 
 Then (/^I should see "(.*?)" before "(.*?)"$/) do |arg1, arg2|
-    result = true
-    page.all('#movies tr') do |tr|
-        a = tr.find(arg1).index
-        b = tr.find(arg2).index
-        if a > b
-            result = false
-            break
+    result = false
+    a = 0
+    b = 0
+    count = 0
+    page.all('#movies tr > td:nth-child(1)').each do |td|
+        if td.text == arg1
+            a = count
         end
+        if td.text == arg2
+            b = count
+        end
+        count += 1
+    end
+    #puts a
+    #puts b
+    if a < b
+        result = true
     end
     expect(result).to be_truthy
 end
@@ -105,14 +130,23 @@ When (/^I click on Release Date Link$/) do
 end
 
 Then (/^I should see the release date "(.*?)" before "(.*?)"$/) do |arg1, arg2|
-    result = true
-    page.all('#movies tr') do |tr|
-        a = tr.find(arg1).index
-        b = tr.find(arg2).index
-        if a > b
-            result = false
-            break
+    result = false
+    a = 0
+    b = 0
+    count = 0
+    page.all('#movies tr > td:nth-child(3)').each do |td|
+        if td.text == arg1
+            a = count
         end
+        if td.text == arg2
+            b = count
+        end
+        count += 1
+    end
+    #puts a
+    #puts b
+    if a < b
+        result = true
     end
     expect(result).to be_truthy
 end
