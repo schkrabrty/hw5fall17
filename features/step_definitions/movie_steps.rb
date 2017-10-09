@@ -82,19 +82,18 @@ Then (/^I should see only movies rated: "(.*?)"$/) do |arg1|
   #puts a
   b = Movie.where(:rating => a).count
   #puts b
-  page.all('#movies tr') do |tr|
-      rows = tr.size
-      rows.should == b
-  end
+  rows = page.all('#movies tr').size - 1 #(The header of the table will be discarded)
+  #puts rows
+  rows.should == b
 end
 
 
 Then (/^I should see all of the movies$/) do 
   b = Movie.count
-  page.all('#movies tr') do |tr|
-      rows = tr.size
-      rows.should == b
-  end
+  #puts b
+  rows = page.all('#movies tr').size - 1  #(The header of the table will be discarded)
+  #puts rows
+  rows.should == b
 end
 
 When (/^I click on Movie Title Link$/) do
@@ -125,7 +124,7 @@ Then (/^I should see "(.*?)" before "(.*?)"$/) do |arg1, arg2|
 end
 
 When (/^I click on Release Date Link$/) do
-    visit movies_path
+    #visit movies_path
     click_on "Release Date"
 end
 
